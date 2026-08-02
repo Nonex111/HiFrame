@@ -1,0 +1,41 @@
+{
+  "batteryPercent" : 79,
+  "builtInDisplayCount" : 1,
+  "disclaimer" : "DisplayLink estimated presentation frequency and Metal completion frequency are not the physical panel refresh rate",
+  "displayCount" : 2,
+  "displayLinkJitterMs" : 0.0018768614011249135,
+  "displayLinkSampleCount" : 600,
+  "durationSeconds" : 8,
+  "error" : null,
+  "estimatedPresentationFPS" : 119.99999960884452,
+  "intervalP10Ms" : 8.3333333022892475,
+  "intervalP90Ms" : 8.3333333604969084,
+  "metalCompletedFPS" : 119.06712620715328,
+  "powerSource" : "电源适配器",
+  "requestedFPS" : 90,
+  "submittedFrames" : 957,
+  "success" : true,
+  "surfaceCount" : 1,
+  "surfaceTelemetry" : [
+    {
+      "displayID" : 1,
+      "displayLinkJitterMs" : 0.0018768614011249135,
+      "displayLinkSampleCount" : 600,
+      "displayName" : "Built-in Retina Display",
+      "drawableHeightPixels" : 2,
+      "drawableWidthPixels" : 2,
+      "estimatedPresentationFPS" : 119.99999960884452,
+      "intervalP10Ms" : 8.3333333022892475,
+      "intervalP90Ms" : 8.3333333604969084,
+      "isBuiltIn" : true,
+      "logicalHeightPoints" : 1,
+      "logicalWidthPoints" : 1,
+      "metalCompletedFPS" : 119.06712620715328,
+      "submittedFrames" : 957,
+      "targetPresentationIntervalMs" : 8.3333333604969084,
+      "timingSource" : "caMetalDisplayLink"
+    }
+  ],
+  "targetPresentationIntervalMs" : 8.3333333604969084,
+  "timingSource" : "caMetalDisplayLink"
+}

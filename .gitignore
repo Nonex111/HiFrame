@@ -1,0 +1,11 @@
+/.build/
+/dist/
+/.swiftpm/
+.DS_Store
+
+# Local icon experiments; keep only the assets used by the published app.
+/Packaging/Assets/*
+!/Packaging/Assets/SteadyFrame-AppIcon-v3.png
+/Packaging/*.iconset/
+/Packaging/SteadyFrame.icns
+/Packaging/SteadyFrame-v2.icns

@@ -1,0 +1,80 @@
+{
+  "condition": "A-promotion-baseline",
+  "estimatedEnergyWhFromRawPower": 1.1260666666666665,
+  "metrics": {
+    "battery_percent": {
+      "maximum": 79.0,
+      "mean": 79.0,
+      "median": 79.0,
+      "minimum": 79.0,
+      "p10": 79.0,
+      "p90": 79.0
+    },
+    "battery_temperature_c": {
+      "maximum": 30.89,
+      "mean": 30.868333333333332,
+      "median": 30.869999999999997,
+      "minimum": 30.84,
+      "p10": 30.84,
+      "p90": 30.89
+    },
+    "gpu_device_percent": {
+      "maximum": 16.0,
+      "mean": 9.36111111111111,
+      "median": 9.0,
+      "minimum": 7.0,
+      "p10": 8.0,
+      "p90": 10.0
+    },
+    "gpu_renderer_percent": {
+      "maximum": 15.0,
+      "mean": 8.694444444444445,
+      "median": 9.0,
+      "minimum": 7.0,
+      "p10": 8.0,
+      "p90": 9.0
+    },
+    "process_cpu_percent": {
+      "maximum": 10.3,
+      "mean": 0.28611111111111115,
+      "median": 0.0,
+      "minimum": 0.0,
+      "p10": 0.0,
+      "p90": 0.0
+    },
+    "process_rss_kb": {
+      "maximum": 42528.0,
+      "mean": 42283.555555555555,
+      "median": 42272.0,
+      "minimum": 42272.0,
+      "p10": 42272.0,
+      "p90": 42296.0
+    },
+    "system_load_mw_raw": {
+      "maximum": 49110.0,
+      "mean": 22521.333333333332,
+      "median": 17280.0,
+      "minimum": 16967.0,
+      "p10": 16967.0,
+      "p90": 49110.0
+    },
+    "system_power_in_mw_raw": {
+      "maximum": 49110.0,
+      "mean": 22521.333333333332,
+      "median": 17280.0,
+      "minimum": 16967.0,
+      "p10": 16967.0,
+      "p90": 49110.0
+    },
+    "virtual_temperature_c": {
+      "maximum": 35.69,
+      "mean": 35.47333333333333,
+      "median": 35.49,
+      "minimum": 35.19,
+      "p10": 35.19,
+      "p90": 35.69
+    }
+  },
+  "sampleCount": 36,
+  "sampledDurationSeconds": 180.0
+}
