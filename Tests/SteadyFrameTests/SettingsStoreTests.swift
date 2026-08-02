@@ -28,6 +28,7 @@ final class SettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.minimumBatteryPercent, 20)
         XCTAssertEqual(store.displayTarget, .builtIn)
         XCTAssertEqual(store.signalPosition, .center)
+        XCTAssertEqual(store.appLanguage, .system)
     }
 
     func testSettingsRoundTrip() {
@@ -37,6 +38,7 @@ final class SettingsStoreTests: XCTestCase {
         store.minimumBatteryPercent = nil
         store.displayTarget = .all
         store.signalPosition = .lowerRight
+        store.appLanguage = .english
         store.totalActiveSeconds = 42
 
         let reloaded = SettingsStore(defaults: defaults)
@@ -46,7 +48,18 @@ final class SettingsStoreTests: XCTestCase {
         XCTAssertNil(reloaded.minimumBatteryPercent)
         XCTAssertEqual(reloaded.displayTarget, .all)
         XCTAssertEqual(reloaded.signalPosition, .lowerRight)
+        XCTAssertEqual(reloaded.appLanguage, .english)
         XCTAssertEqual(reloaded.totalActiveSeconds, 42)
+    }
+
+    func testInvalidLanguageFallsBackToSystem() {
+        _ = SettingsStore(defaults: defaults)
+        defaults.set("unsupported", forKey: "appLanguage")
+
+        let reloaded = SettingsStore(defaults: defaults)
+
+        XCTAssertEqual(reloaded.appLanguage, .system)
+        XCTAssertEqual(defaults.string(forKey: "appLanguage"), AppLanguage.system.rawValue)
     }
 
     func testRemovedNinetyFPSMigratesToOneHundredTwenty() {

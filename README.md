@@ -25,7 +25,7 @@ SteadyFrame is a small macOS menu bar utility for MacBook Pro displays with ProM
 
 This may reduce the visible flicker and discomfort that some users notice in dark gray areas at low brightness.
 
-The interface follows the macOS language and supports English and Simplified Chinese. The preview download is ad-hoc signed and not notarized, so macOS may require approval in **System Settings → Privacy & Security** on first launch.
+The interface supports **Follow System**, **English**, and **Simplified Chinese** language options directly from the menu bar. The preview download is ad-hoc signed and not notarized, so macOS may require approval in **System Settings → Privacy & Security** on first launch.
 
 > [!IMPORTANT]
 > SteadyFrame requests a presentation cadence. It does not change the macOS display mode, measure the panel's physical refresh rate, or guarantee a 120 Hz lock. Results vary by Mac, macOS version, content, power state, and viewer.
@@ -38,7 +38,7 @@ The interface follows the macOS language and supports English and Simplified Chi
 - Target the built-in display or all connected displays.
 - Use a fixed, tiny 8/255 frame-to-frame luminance delta.
 - Place the signal at the lower-left, lower-right, or center of the screen.
-- Follow the system language with English and Simplified Chinese interfaces.
+- Switch between Follow System, English, and Simplified Chinese from the menu bar.
 - Toggle instantly with `⌃⌥⌘H` and copy runtime diagnostics from the menu bar.
 
 ## Requirements

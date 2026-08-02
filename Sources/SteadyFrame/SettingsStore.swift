@@ -7,6 +7,7 @@ final class SettingsStore {
         static let activationPolicy = "activationPolicy"
         static let minimumBatteryPercent = "minimumBatteryPercent"
         static let displayTarget = "displayTarget"
+        static let appLanguage = "appLanguage"
         static let legacySignalStrength = "signalStrength"
         static let signalPosition = "signalPosition"
         static let legacyAllowedBundleIdentifiers = "allowedBundleIdentifiers"
@@ -34,6 +35,10 @@ final class SettingsStore {
 
     var displayTarget: DisplayTarget {
         didSet { defaults.set(displayTarget.rawValue, forKey: Key.displayTarget) }
+    }
+
+    var appLanguage: AppLanguage {
+        didSet { defaults.set(appLanguage.rawValue, forKey: Key.appLanguage) }
     }
 
     var signalPosition: SignalPosition {
@@ -75,6 +80,11 @@ final class SettingsStore {
         displayTarget = DisplayTarget(
             rawValue: defaults.string(forKey: Key.displayTarget) ?? ""
         ) ?? .builtIn
+        let storedAppLanguage = defaults.string(forKey: Key.appLanguage) ?? ""
+        appLanguage = AppLanguage(rawValue: storedAppLanguage) ?? .system
+        if AppLanguage(rawValue: storedAppLanguage) == nil {
+            defaults.set(appLanguage.rawValue, forKey: Key.appLanguage)
+        }
         let storedSignalPosition = defaults.string(forKey: Key.signalPosition) ?? ""
         signalPosition = SignalPosition(rawValue: storedSignalPosition) ?? .center
         if SignalPosition(rawValue: storedSignalPosition) == nil {

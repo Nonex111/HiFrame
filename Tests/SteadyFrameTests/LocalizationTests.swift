@@ -8,9 +8,11 @@ final class LocalizationTests: XCTestCase {
         let chinese = try catalog(language: "zh-Hans")
 
         XCTAssertEqual(Set(english.keys), Set(chinese.keys))
-        XCTAssertGreaterThanOrEqual(english.count, 35)
+        XCTAssertGreaterThanOrEqual(english.count, 37)
         XCTAssertEqual(english["menu.enableKeeper"], "Enable refresh-rate keeper")
         XCTAssertEqual(chinese["menu.enableKeeper"], "启用刷新率维持")
+        XCTAssertEqual(english["menu.language"], "Language")
+        XCTAssertEqual(chinese["menu.language"], "语言")
     }
 
     func testEveryCatalogKeyIsUsedByTheApp() throws {
@@ -40,13 +42,33 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(usedKeys, Set(english.keys))
     }
 
+    func testExplicitLanguageOverrideLoadsTheSelectedCatalog() throws {
+        let bundle = try XCTUnwrap(Bundle(path: resourcesRoot.path))
+        defer { L10n.language = .system }
+
+        L10n.language = .english
+        XCTAssertEqual(
+            L10n.text("menu.language", fallback: "fallback", bundle: bundle),
+            "Language"
+        )
+        XCTAssertEqual(
+            L10n.text("language.system", fallback: "fallback", bundle: bundle),
+            "Follow System"
+        )
+
+        L10n.language = .simplifiedChinese
+        XCTAssertEqual(
+            L10n.text("menu.language", fallback: "fallback", bundle: bundle),
+            "语言"
+        )
+        XCTAssertEqual(
+            L10n.text("language.system", fallback: "fallback", bundle: bundle),
+            "跟随系统"
+        )
+    }
+
     private func catalog(language: String) throws -> [String: String] {
-        let projectRoot = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-        let url = projectRoot
-            .appendingPathComponent("Packaging/Resources")
+        let url = resourcesRoot
             .appendingPathComponent("\(language).lproj/Localizable.strings")
         let data = try Data(contentsOf: url)
         let plist = try PropertyListSerialization.propertyList(
@@ -55,5 +77,13 @@ final class LocalizationTests: XCTestCase {
             format: nil
         )
         return try XCTUnwrap(plist as? [String: String])
+    }
+
+    private var resourcesRoot: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Packaging/Resources")
     }
 }

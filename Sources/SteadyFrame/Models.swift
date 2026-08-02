@@ -1,6 +1,31 @@
 import CoreGraphics
 import Foundation
 
+enum AppLanguage: String, CaseIterable {
+    case system
+    case english
+    case simplifiedChinese
+
+    var localizationIdentifier: String? {
+        switch self {
+        case .system: return nil
+        case .english: return "en"
+        case .simplifiedChinese: return "zh-Hans"
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .system:
+            return L10n.text("language.system", fallback: "Follow System")
+        case .english:
+            return "English"
+        case .simplifiedChinese:
+            return "简体中文"
+        }
+    }
+}
+
 enum ActivationPolicy: String, CaseIterable {
     case always
     case powerAdapterOnly

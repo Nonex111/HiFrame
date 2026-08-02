@@ -23,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var timerTicks = 0
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        L10n.language = settings.appLanguage
         NSApp.setActivationPolicy(.accessory)
         configureStatusItem()
 
@@ -220,6 +221,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
         ))
 
+        statusMenu.addItem(submenuItem(
+            title: L10n.text("menu.language", fallback: "Language"),
+            items: AppLanguage.allCases.map { language in
+            actionItem(
+                title: language.title,
+                action: #selector(changeLanguage(_:)),
+                representedObject: language.rawValue,
+                state: settings.appLanguage == language ? .on : .off
+            )
+            }
+        ))
+
         statusMenu.addItem(.separator())
         statusMenu.addItem(actionItem(
             title: L10n.text("menu.copyDiagnostics", fallback: "Copy diagnostics"),
@@ -350,6 +363,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         evaluatePolicy()
     }
 
+    @objc private func changeLanguage(_ sender: NSMenuItem) {
+        guard let value = sender.representedObject as? String,
+              let language = AppLanguage(rawValue: value) else { return }
+        settings.appLanguage = language
+        L10n.language = language
+        updateStatusButton()
+        rebuildMenu()
+    }
+
     @objc private func copyDiagnostics() {
         let telemetry = engine.currentTelemetry(forceSample: true)
         let screenDescriptions = NSScreen.screens.map { screen -> String in
@@ -361,6 +383,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             "SteadyFrame diagnostics",
             "macOS: \(ProcessInfo.processInfo.operatingSystemVersionString)",
             "enabled: \(settings.isEnabled)",
+            "language: \(settings.appLanguage.rawValue)",
             "policy: \(settings.activationPolicy.rawValue)",
             "decision: \(decision.shouldRun ? "run" : decision.pauseReason?.description ?? "pause")",
             "requestedFPS: \(settings.requestedFramesPerSecond)",

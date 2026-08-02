@@ -27,6 +27,8 @@
 "menu.off" = "Off";
 "menu.signalPosition" = "Signal position";
 "menu.targetDisplay" = "Target display";
+"menu.language" = "Language";
+"language.system" = "Follow System";
 "menu.copyDiagnostics" = "Copy diagnostics";
 "menu.about" = "About SteadyFrame…";
 "menu.quit" = "Quit SteadyFrame";
