@@ -44,6 +44,7 @@
 "about.description" = "ProMotion 刷新率维持工具。它通过极小的持续像素变化请求活跃绘制，以尝试减少静态深灰画面下的可见闪烁和视觉不适。";
 "common.ok" = "知道了";
 "menu.checkUpdates" = "检查更新…";
+"menu.reportIssue" = "反馈问题…";
 "update.checking" = "正在检查更新…";
 "update.available" = "发现 HiFrame 新版本";
 "update.versions" = "当前版本：%@\n最新版本：%@";

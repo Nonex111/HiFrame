@@ -268,6 +268,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusMenu.addItem(checkItem)
         checkUpdatesMenuItem = checkItem
         statusMenu.addItem(actionItem(
+            title: L10n.text("menu.reportIssue", fallback: "Report an Issue…"),
+            action: #selector(reportIssue)
+        ))
+        statusMenu.addItem(actionItem(
             title: L10n.text("menu.copyDiagnostics", fallback: "Copy diagnostics"),
             action: #selector(copyDiagnostics)
         ))
@@ -403,6 +407,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         L10n.language = language
         updateStatusButton()
         rebuildMenu()
+    }
+
+    @objc private func reportIssue() {
+        guard let url = URL(string: "https://github.com/Nonex111/SteadyFrame/issues/new") else { return }
+        NSWorkspace.shared.open(url)
     }
 
     @objc private func checkForUpdates() {
