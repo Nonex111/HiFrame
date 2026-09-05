@@ -44,6 +44,7 @@
 "about.description" = "A ProMotion refresh-rate keeper that requests active rendering through tiny, continuous pixel changes. It aims to reduce visible flicker and discomfort in static dark-gray scenes.";
 "common.ok" = "OK";
 "menu.checkUpdates" = "Check for Updates…";
+"menu.reportIssue" = "Report an Issue…";
 "update.checking" = "Checking for Updates…";
 "update.available" = "A new HiFrame version is available";
 "update.versions" = "Current version: %@\nNew version: %@";

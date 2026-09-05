@@ -41,6 +41,7 @@ The interface supports **Follow System**, **English**, and **Simplified Chinese*
 - Switch between Follow System, English, and Simplified Chinese from the menu bar.
 - Optionally launch in the menu bar when you log in to macOS; off by default.
 - Check for updates manually and receive new stable-version prompts automatically.
+- Choose **Report an Issue…** to open GitHub’s new-issue page in your browser.
 - Toggle instantly with `⌃⌥⌘H` and copy runtime diagnostics from the menu bar.
 
 ## Launch at login
