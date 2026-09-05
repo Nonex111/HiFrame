@@ -3,8 +3,8 @@ set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DOWNLOAD_DIR="$PROJECT_ROOT/downloads"
-ARCHIVE_PATH="$DOWNLOAD_DIR/SteadyFrame.zip"
-CHECKSUM_PATH="$DOWNLOAD_DIR/SteadyFrame.zip.sha256"
+ARCHIVE_PATH="$DOWNLOAD_DIR/HiFrame.zip"
+CHECKSUM_PATH="$DOWNLOAD_DIR/HiFrame.zip.sha256"
 
 if [[ "$DOWNLOAD_DIR" != "$PROJECT_ROOT/downloads" ]]; then
   print -u2 "Refusing to write to an unexpected download directory: $DOWNLOAD_DIR"
@@ -15,12 +15,12 @@ fi
 mkdir -p "$DOWNLOAD_DIR"
 rm -f "$ARCHIVE_PATH" "$CHECKSUM_PATH"
 ditto -c -k --sequesterRsrc --keepParent \
-  "$PROJECT_ROOT/dist/SteadyFrame.app" \
+  "$PROJECT_ROOT/dist/HiFrame.app" \
   "$ARCHIVE_PATH"
 
 (
   cd "$DOWNLOAD_DIR"
-  shasum -a 256 SteadyFrame.zip > SteadyFrame.zip.sha256
+  shasum -a 256 HiFrame.zip > HiFrame.zip.sha256
 )
 
 print "$ARCHIVE_PATH"
