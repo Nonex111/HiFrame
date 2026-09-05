@@ -6,7 +6,7 @@ CONDITION="${1:?condition name required}"
 DURATION_SECONDS="${2:-180}"
 RUN_DIRECTORY="${3:-$PROJECT_ROOT/ab-results/$(date +%Y%m%d-%H%M%S)-$CONDITION}"
 KEEP_ALIVE="${4:-off}"
-APP_BINARY="$PROJECT_ROOT/dist/SteadyFrame.app/Contents/MacOS/SteadyFrame"
+APP_BINARY="$PROJECT_ROOT/dist/HiFrame.app/Contents/MacOS/HiFrame"
 METRICS_FILE="$RUN_DIRECTORY/metrics.csv"
 SCENE_LOG="$RUN_DIRECTORY/scene.log"
 

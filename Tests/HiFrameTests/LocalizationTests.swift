@@ -1,6 +1,6 @@
 import Foundation
 import XCTest
-@testable import SteadyFrame
+@testable import HiFrame
 
 final class LocalizationTests: XCTestCase {
     func testEnglishAndChineseCatalogsHaveMatchingKeys() throws {
@@ -21,7 +21,7 @@ final class LocalizationTests: XCTestCase {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let sourceRoot = projectRoot.appendingPathComponent("Sources/SteadyFrame")
+        let sourceRoot = projectRoot.appendingPathComponent("Sources/HiFrame")
         let sourceURLs = try FileManager.default.contentsOfDirectory(
             at: sourceRoot,
             includingPropertiesForKeys: nil

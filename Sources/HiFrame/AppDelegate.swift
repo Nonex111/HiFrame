@@ -1,9 +1,14 @@
 import AppKit
+import ServiceManagement
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let settings = SettingsStore()
     private let powerMonitor = PowerMonitor()
     private let engine = RefreshKeeperEngine()
+    private let loginItemManager = LoginItemManager()
+    private let updateChecker = UpdateChecker()
+    private var releaseCheckTask: Task<Void, Never>?
+    private weak var checkUpdatesMenuItem: NSMenuItem?
     private lazy var runtimeTracker = RuntimeTracker(settings: settings)
 
     private var statusItem: NSStatusItem!
@@ -48,9 +53,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         evaluatePolicy()
+        performUpdateCheck(manual: false)
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        releaseCheckTask?.cancel()
         runtimeTracker.stop()
         powerMonitor.stop()
         updateTimer?.invalidate()
@@ -70,7 +77,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusMenu = NSMenu()
         statusMenu.delegate = self
         let startingItem = NSMenuItem(
-            title: L10n.text("menu.starting", fallback: "SteadyFrame is starting…"),
+            title: L10n.text("menu.starting", fallback: "HiFrame is starting…"),
             action: nil,
             keyEquivalent: ""
         )
@@ -107,6 +114,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private func timerFired() {
         timerTicks += 1
+        if timerTicks.isMultiple(of: 3_600) {
+            performUpdateCheck(manual: false)
+        }
         let telemetry = engine.currentTelemetry()
         if timerTicks.isMultiple(of: 30) {
             runtimeTracker.checkpoint()
@@ -125,10 +135,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         button.alphaValue = active ? 1 : 0.45
         button.attributedTitle = NSAttributedString(string: "")
         button.toolTip = active
-            ? L10n.text("status.running", fallback: "SteadyFrame is running")
+            ? L10n.text("status.running", fallback: "HiFrame is running")
             : L10n.format(
                 "status.tooltipPaused",
-                fallback: "SteadyFrame: %@",
+                fallback: "HiFrame: %@",
                 decision.pauseReason?.description
                     ?? L10n.text("status.notRunning", fallback: "Not running")
             )
@@ -137,7 +147,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 ? L10n.text("accessibility.running", fallback: "Running")
                 : L10n.text("accessibility.paused", fallback: "Paused")
         )
-        button.setAccessibilityLabel("SteadyFrame")
+        button.setAccessibilityLabel("HiFrame")
     }
 
     private func rebuildMenu() {
@@ -233,18 +243,41 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
         ))
 
+        let loginStatus = loginItemManager.status
+        statusMenu.addItem(actionItem(
+            title: L10n.text("menu.launchAtLogin", fallback: "Launch at Login"),
+            action: #selector(toggleLaunchAtLogin),
+            state: loginStatus == .enabled ? .on : loginStatus == .requiresApproval ? .mixed : .off,
+            enabled: loginItemManager.isAppBundle
+        ))
+        if loginStatus == .requiresApproval {
+            statusMenu.addItem(actionItem(
+                title: L10n.text("login.approvalRequired", fallback: "Approve in System Settings…"),
+                action: #selector(openLoginItemSettings)
+            ))
+        }
+
         statusMenu.addItem(.separator())
+        let checkItem = actionItem(
+            title: updateChecker.isChecking
+                ? L10n.text("update.checking", fallback: "Checking for Updates…")
+                : L10n.text("menu.checkUpdates", fallback: "Check for Updates…"),
+            action: #selector(checkForUpdates),
+            enabled: !updateChecker.isChecking
+        )
+        statusMenu.addItem(checkItem)
+        checkUpdatesMenuItem = checkItem
         statusMenu.addItem(actionItem(
             title: L10n.text("menu.copyDiagnostics", fallback: "Copy diagnostics"),
             action: #selector(copyDiagnostics)
         ))
         statusMenu.addItem(actionItem(
-            title: L10n.text("menu.about", fallback: "About SteadyFrame…"),
+            title: L10n.text("menu.about", fallback: "About HiFrame…"),
             action: #selector(showAbout)
         ))
         statusMenu.addItem(.separator())
         statusMenu.addItem(actionItem(
-            title: L10n.text("menu.quit", fallback: "Quit SteadyFrame"),
+            title: L10n.text("menu.quit", fallback: "Quit HiFrame"),
             action: #selector(quit)
         ))
     }
@@ -372,6 +405,97 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         rebuildMenu()
     }
 
+    @objc private func checkForUpdates() {
+        performUpdateCheck(manual: true)
+    }
+
+    private func performUpdateCheck(manual: Bool) {
+        guard releaseCheckTask == nil else { return }
+        releaseCheckTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer {
+                self.releaseCheckTask = nil
+                self.checkUpdatesMenuItem?.title = L10n.text("menu.checkUpdates", fallback: "Check for Updates…")
+                self.checkUpdatesMenuItem?.isEnabled = true
+            }
+            self.checkUpdatesMenuItem?.title = L10n.text("update.checking", fallback: "Checking for Updates…")
+            self.checkUpdatesMenuItem?.isEnabled = false
+            do {
+                let outcome = try await self.updateChecker.check(manual: manual)
+                guard !Task.isCancelled, let outcome else { return }
+                switch outcome {
+                case .available(let release):
+                    self.showUpdateAlert(
+                        title: L10n.text("update.available", fallback: "A new HiFrame version is available"),
+                        message: L10n.format("update.versions", fallback: "Current version: %@\nNew version: %@", self.updateChecker.currentVersion, release.tagName),
+                        pageURL: release.pageURL
+                    )
+                case .upToDate:
+                    if manual {
+                        self.showUpdateAlert(
+                            title: L10n.text("update.upToDate", fallback: "You’re up to date"),
+                            message: L10n.format("update.currentVersion", fallback: "HiFrame %@", self.updateChecker.currentVersion)
+                        )
+                    }
+                }
+            } catch {
+                guard manual, !Task.isCancelled else { return }
+                self.showUpdateAlert(
+                    title: L10n.text("update.failed", fallback: "Could not check for updates"),
+                    message: error.localizedDescription,
+                    pageURL: UpdateChecker.releasesURL
+                )
+            }
+        }
+    }
+
+    private func showUpdateAlert(title: String, message: String, pageURL: URL? = nil) {
+        NSApp.activate(ignoringOtherApps: true)
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        if pageURL != nil {
+            alert.addButton(withTitle: L10n.text("update.openRelease", fallback: "Open Releases Page"))
+            alert.addButton(withTitle: L10n.text("update.later", fallback: "Later"))
+        } else {
+            alert.addButton(withTitle: L10n.text("common.ok", fallback: "OK"))
+        }
+        if alert.runModal() == .alertFirstButtonReturn, let pageURL {
+            NSWorkspace.shared.open(pageURL)
+        }
+    }
+
+    @objc private func toggleLaunchAtLogin() {
+        let currentStatus = loginItemManager.status
+        let enable = currentStatus != .enabled && currentStatus != .requiresApproval
+        do {
+            try loginItemManager.setEnabled(enable)
+            if enable, loginItemManager.status == .requiresApproval {
+                openLoginItemSettings()
+            }
+        } catch {
+            NSApp.activate(ignoringOtherApps: true)
+            let alert = NSAlert()
+            alert.alertStyle = .warning
+            alert.messageText = L10n.text(
+                "login.changeFailed", fallback: "Could not change launch at login"
+            )
+            alert.informativeText = error.localizedDescription
+            alert.addButton(withTitle: L10n.text("common.ok", fallback: "OK"))
+            alert.addButton(withTitle: L10n.text(
+                "login.openSettings", fallback: "Open Login Items Settings…"
+            ))
+            if alert.runModal() == .alertSecondButtonReturn {
+                openLoginItemSettings()
+            }
+        }
+        rebuildMenu()
+    }
+
+    @objc private func openLoginItemSettings() {
+        SMAppService.openSystemSettingsLoginItems()
+    }
+
     @objc private func copyDiagnostics() {
         let telemetry = engine.currentTelemetry(forceSample: true)
         let screenDescriptions = NSScreen.screens.map { screen -> String in
@@ -380,10 +504,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             return "\(screen.localizedName) \(Int(screen.frame.width))x\(Int(screen.frame.height)) builtIn=\(builtIn)"
         }
         let report = [
-            "SteadyFrame diagnostics",
+            "HiFrame diagnostics",
             "macOS: \(ProcessInfo.processInfo.operatingSystemVersionString)",
             "enabled: \(settings.isEnabled)",
             "language: \(settings.appLanguage.rawValue)",
+            "launchAtLoginStatus: \(loginItemManager.status.rawValue)",
             "policy: \(settings.activationPolicy.rawValue)",
             "decision: \(decision.shouldRun ? "run" : decision.pauseReason?.description ?? "pause")",
             "requestedFPS: \(settings.requestedFramesPerSecond)",
@@ -434,7 +559,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func showAbout() {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
-        alert.messageText = "SteadyFrame"
+        alert.messageText = "HiFrame"
         alert.informativeText = L10n.text(
             "about.description",
             fallback: "A ProMotion refresh-rate keeper that requests active rendering through tiny, continuous pixel changes. It aims to reduce visible flicker and discomfort in static dark-gray scenes."

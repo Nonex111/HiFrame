@@ -1,5 +1,5 @@
 import XCTest
-@testable import SteadyFrame
+@testable import HiFrame
 
 final class PresentationTimingSamplerTests: XCTestCase {
     func testRegular120FPSTimestampsProduceExpectedEstimate() throws {

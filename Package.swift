@@ -2,28 +2,29 @@
 import PackageDescription
 
 let package = Package(
-    name: "SteadyFrame",
+    name: "HiFrame",
     platforms: [
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "SteadyFrame", targets: ["SteadyFrame"])
+        .executable(name: "HiFrame", targets: ["HiFrame"])
     ],
     targets: [
         .executableTarget(
-            name: "SteadyFrame",
+            name: "HiFrame",
             linkerSettings: [
                 .linkedFramework("AppKit"),
                 .linkedFramework("Carbon"),
                 .linkedFramework("IOKit"),
                 .linkedFramework("Metal"),
                 .linkedFramework("MetalKit"),
-                .linkedFramework("QuartzCore")
+                .linkedFramework("QuartzCore"),
+                .linkedFramework("ServiceManagement")
             ]
         ),
         .testTarget(
-            name: "SteadyFrameTests",
-            dependencies: ["SteadyFrame"]
+            name: "HiFrameTests",
+            dependencies: ["HiFrame"]
         )
     ],
     swiftLanguageVersions: [.v5]

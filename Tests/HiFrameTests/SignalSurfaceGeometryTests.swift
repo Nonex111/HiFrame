@@ -1,6 +1,6 @@
 import CoreGraphics
 import XCTest
-@testable import SteadyFrame
+@testable import HiFrame
 
 final class SignalSurfaceGeometryTests: XCTestCase {
     func testSignalSurfaceIsOnePointCenteredOnMainDisplay() {
