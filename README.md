@@ -13,7 +13,9 @@
 </p>
 
 <p align="center">
-  <a href="downloads/HiFrame.zip?raw=true"><strong>⬇ Download HiFrame for macOS</strong></a>
+  <a href="https://github.com/Nonex111/SteadyFrame/releases/latest/download/HiFrame.zip"><strong>⬇ Download HiFrame for macOS</strong></a><br>
+  <sub>Apple Silicon · macOS 13+ · ZIP download</sub><br>
+  <a href="https://github.com/Nonex111/SteadyFrame/releases/latest">Release notes and checksums</a> · <a href="https://github.com/Nonex111/SteadyFrame/releases">Previous versions</a>
 </p>
 
 <p align="center">
@@ -29,6 +31,12 @@ The interface supports **Follow System**, **English**, and **Simplified Chinese*
 
 > [!IMPORTANT]
 > HiFrame requests a presentation cadence. It does not change the macOS display mode, measure the panel's physical refresh rate, or guarantee a 120 Hz lock. Results vary by Mac, macOS version, content, power state, and viewer.
+
+## Install
+
+1. Download the ZIP using the button above and unzip it.
+2. Move **HiFrame.app** to **Applications**, then open it. HiFrame appears in the menu bar.
+3. When upgrading from SteadyFrame, quit the old app before opening HiFrame and check the Launch at Login setting again.
 
 ## Highlights
 

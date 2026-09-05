@@ -13,7 +13,9 @@
 </p>
 
 <p align="center">
-  <a href="downloads/HiFrame.zip?raw=true"><strong>⬇ 下载 HiFrame macOS 版</strong></a>
+  <a href="https://github.com/Nonex111/SteadyFrame/releases/latest/download/HiFrame.zip"><strong>⬇ 下载 HiFrame macOS 版</strong></a><br>
+  <sub>Apple Silicon · macOS 13+ · ZIP 安装包</sub><br>
+  <a href="https://github.com/Nonex111/SteadyFrame/releases/latest">更新说明与校验文件</a> · <a href="https://github.com/Nonex111/SteadyFrame/releases">历史版本</a>
 </p>
 
 <p align="center">
@@ -29,6 +31,12 @@ HiFrame 是一款面向 ProMotion MacBook Pro 的轻量 macOS 菜单栏工具。
 
 > [!IMPORTANT]
 > HiFrame 请求的是呈现节奏。它不会修改 macOS 显示模式、测量面板物理刷新率，也不保证将面板锁定在 120 Hz。实际效果会因 Mac 型号、macOS 版本、画面内容、电源状态和观察者而异。
+
+## 安装
+
+1. 点击上方下载按钮，下载 ZIP 并解压。
+2. 将 **HiFrame.app** 拖入**应用程序**文件夹后打开，应用图标会显示在菜单栏。
+3. 从 SteadyFrame 升级时，先退出旧版，再打开 HiFrame，并重新确认自启动开关。
 
 ## 主要功能
 
